@@ -1,6 +1,12 @@
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { Link } from "react-router-dom";
+import {
+  Box,
+  Button,
+  FormControl,
+  Input,
+  VStack,
+  Text,
+} from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import AlertMessage from "../layout/AlertMessage";
@@ -9,8 +15,7 @@ const LoginForm = () => {
   // Custom hook
   const { loginUser } = useAuth();
 
-  // local state
-
+  // Local state
   const [loginForm, setLoginForm] = useState({
     username: "",
     password: "",
@@ -38,42 +43,48 @@ const LoginForm = () => {
   };
 
   return (
-    <>
-      <Form className="my-4" onSubmit={login}>
-        <AlertMessage info={alert} />
-        <Form.Group>
-          <Form.Control
-            type="text"
-            placeholder="Username"
-            name="username"
-            required
-            value={username}
-            onChange={onChangeLoginForm}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            name="password"
-            required
-            value={password}
-            onChange={onChangeLoginForm}
-          />
-        </Form.Group>
-        <Button variant="success" type="Submit">
-          Login
-        </Button>
-      </Form>
-      <p>
-        Don't have an account?
-        <Link to="/register">
-          <Button variant="info" size="sm" className="ml-2">
-            Register
+    <Box>
+      <form onSubmit={login}>
+        <VStack spacing={4} align="stretch">
+          <AlertMessage info={alert} />
+          <FormControl isRequired>
+            <Input
+              type="text"
+              placeholder="Username"
+              name="username"
+              value={username}
+              onChange={onChangeLoginForm}
+              bg="white"
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <Input
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={password}
+              onChange={onChangeLoginForm}
+              bg="white"
+            />
+          </FormControl>
+          <Button type="submit" colorScheme="green" size="lg" width="full">
+            Login
           </Button>
-        </Link>
-      </p>
-    </>
+        </VStack>
+      </form>
+      <Text mt={4} textAlign="center" color="white">
+        Don't have an account?{" "}
+        <Button
+          as={RouterLink}
+          to="/register"
+          variant="link"
+          colorScheme="blue"
+          size="sm"
+        >
+          Register
+        </Button>
+      </Text>
+    </Box>
   );
 };
 

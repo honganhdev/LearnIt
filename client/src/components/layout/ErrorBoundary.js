@@ -1,5 +1,16 @@
 import React from 'react';
-import { Alert, Container, Button } from 'react-bootstrap';
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Container,
+  Button,
+  Box,
+  VStack,
+  HStack,
+  Code,
+} from '@chakra-ui/react';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -41,34 +52,52 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <Container className="mt-5">
-          <Alert variant="danger">
-            <Alert.Heading>Oops! Something went wrong</Alert.Heading>
-            <p>
+        <Container maxW="container.lg" mt={10}>
+          <Alert
+            status="error"
+            variant="subtle"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            borderRadius="md"
+            p={8}
+          >
+            <AlertIcon boxSize="40px" mr={0} />
+            <AlertTitle mt={4} mb={1} fontSize="lg">
+              Oops! Something went wrong
+            </AlertTitle>
+            <AlertDescription maxW="md" mb={4}>
               We're sorry for the inconvenience. An unexpected error has occurred.
-            </p>
+            </AlertDescription>
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div className="mt-3">
-                <strong>Error Details:</strong>
-                <pre className="mt-2 p-2 bg-light border rounded">
+              <Box w="100%" mt={4} mb={4}>
+                <Box fontWeight="bold" mb={2}>Error Details:</Box>
+                <Code
+                  display="block"
+                  whiteSpace="pre"
+                  p={4}
+                  borderRadius="md"
+                  fontSize="sm"
+                  overflow="auto"
+                  maxH="300px"
+                >
                   {this.state.error.toString()}
                   {this.state.errorInfo && this.state.errorInfo.componentStack}
-                </pre>
-              </div>
+                </Code>
+              </Box>
             )}
-            <hr />
-            <div className="d-flex justify-content-end">
-              <Button onClick={this.handleReset} variant="outline-danger">
+            <HStack spacing={4} mt={4}>
+              <Button onClick={this.handleReset} variant="outline" colorScheme="red">
                 Try Again
               </Button>
               <Button
                 onClick={() => (window.location.href = '/')}
-                variant="danger"
-                className="ms-2"
+                colorScheme="red"
               >
                 Go to Home
               </Button>
-            </div>
+            </HStack>
           </Alert>
         </Container>
       );
