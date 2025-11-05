@@ -1,115 +1,28 @@
-.landing {
-  position: relative;
-  background: url("./assets/landing.jpg") no-repeat center center/cover;
-  height: 100vh;
+/*
+ * Custom CSS for LearnIt Application
+ * Most styling is now handled by Chakra UI
+ * This file contains only minimal custom styles
+ */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }
 
-.dark-overlay {
-  background-color: rgba(0, 0, 0, 0.5);
-  height: 100%;
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-.landing-inner {
-  height: 100%;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-.landing-inner form {
-  width: 30%;
-}
-.landing-inner .form-group {
-  margin-bottom: 15px;
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
 }
 
-.landing-inner h1,
-.landing-inner h4,
-.landing-inner p {
-  color: white;
-}
-
-.spinner-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -moz-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  transform: translateX(-50%) translateY(-50%);
-}
-
-/* Post button */
-.post-button {
-  padding-top: 0;
-  background: transparent;
-  border: none;
-}
-
-.post-button:hover {
-  background: transparent;
-}
-
-a.post-button.btn:focus,
-a.post-button.btn:active {
-  outline: none;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-button.post-button.btn:focus,
-button.post-button.btn:active {
-  outline: none;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-/* Floating add button */
-.btn-floating {
-  position: fixed;
-  right: 3rem;
-  bottom: 3rem;
-  background: transparent;
-  border: none;
-}
-
-.btn-floating:hover {
-  background: transparent;
-}
-
-.btn-floating:focus,
-.btn-floating:active {
-  outline: none;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-/* Add new post tooltip */
-.tooltip {
-  background: transparent;
-}
-
-.tooltip .arrow::before {
-  border-left-color: #78c2ad;
-}
-
-.tooltip-inner {
-  background: #78c2ad;
-}
-
-/* Post border thicker */
-.border-success,
-.border-warning,
-.border-danger {
-  border-width: 2px;
-}
-
-/* Post title */
-.post-title {
-  margin-bottom: 0.5rem;
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

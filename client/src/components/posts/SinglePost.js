@@ -1,45 +1,60 @@
-import Card from "react-bootstrap/Card";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Badge from "react-bootstrap/Badge";
+import { Box, Badge, Text, Heading, Flex, useColorModeValue } from "@chakra-ui/react";
 import ActionButtons from "./ActionButtons";
 
-const SinglePost = ({ post: { _id, status, title, description, url } }) => (
-  <Card
-    className="shadow"
-    border={
-      status === "LEARNED"
-        ? "success"
-        : status === "LEARNING"
-        ? "warning"
-        : "danger"
+const SinglePost = ({ post: { _id, status, title, description, url } }) => {
+  const getBorderColor = (status) => {
+    switch (status) {
+      case "LEARNED":
+        return "success.500";
+      case "LEARNING":
+        return "warning.500";
+      default:
+        return "danger.500";
     }
-  >
-    <Card.Body>
-      <Card.Title>
-        <Row>
-          <Col>
-            <p className="post-title">{title}</p>
-            <Badge
-              variant={
-                status === "LEARNED"
-                  ? "success"
-                  : status === "LEARNING"
-                  ? "warning"
-                  : "danger"
-              }
-            >
-              {status}
-            </Badge>
-          </Col>
-          <Col className="text-right">
-            <ActionButtons url={url} _id={_id} />
-          </Col>
-        </Row>
-      </Card.Title>
-      <Card.Text>{description}</Card.Text>
-    </Card.Body>
-  </Card>
-);
+  };
+
+  const getBadgeColor = (status) => {
+    switch (status) {
+      case "LEARNED":
+        return "green";
+      case "LEARNING":
+        return "orange";
+      default:
+        return "red";
+    }
+  };
+
+  const bgColor = useColorModeValue("white", "gray.800");
+
+  return (
+    <Box
+      bg={bgColor}
+      borderRadius="lg"
+      borderWidth="2px"
+      borderColor={getBorderColor(status)}
+      boxShadow="md"
+      p={4}
+      transition="all 0.3s"
+      _hover={{ boxShadow: "xl", transform: "translateY(-2px)" }}
+    >
+      <Flex justify="space-between" align="start" mb={3}>
+        <Box flex="1">
+          <Heading size="md" mb={2}>
+            {title}
+          </Heading>
+          <Badge colorScheme={getBadgeColor(status)} fontSize="sm">
+            {status}
+          </Badge>
+        </Box>
+        <ActionButtons url={url} _id={_id} />
+      </Flex>
+      {description && (
+        <Text color="gray.600" fontSize="sm">
+          {description}
+        </Text>
+      )}
+    </Box>
+  );
+};
 
 export default SinglePost;

@@ -1,6 +1,20 @@
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+  Select,
+  VStack,
+  FormHelperText,
+} from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { usePosts } from "../../hooks/usePosts";
 
@@ -13,7 +27,7 @@ export const UpdatePostModal = () => {
     updatePost,
     setShowToast,
   } = usePosts();
-  //State
+  // State
   const [updatedPost, setUpdatedPost] = useState(post);
 
   useEffect(() => setUpdatedPost(post), [post]);
@@ -35,75 +49,70 @@ export const UpdatePostModal = () => {
     setShowToast({ show: true, message, type: success ? "success" : "danger" });
   };
 
-  //   const resetAddPostData = () => {
-  //     setNewPost({ title: "", description: "", url: "", status: "TO LEARN" });
-  //     setShowAddPostModal(false);
-  //   };
-
   return (
-    <Modal show={showUpdatePostModal} onHide={closeDialog}>
-      <Modal.Header closeButton>
-        <Modal.Title>Make progress?</Modal.Title>
-      </Modal.Header>
-      <Form onSubmit={onSubmit}>
-        <Modal.Body>
-          <Form.Group>
-            <Form.Control
-              type="text"
-              placeholder="Title"
-              name="title"
-              required
-              aria-describedby="title-help"
-              value={title}
-              onChange={onChangeUpdatedPostForm}
-            />
-            <Form.Text id="title-help" muted>
-              Requited
-            </Form.Text>
-          </Form.Group>
-          <Form.Group>
-            <Form.Control
-              as="textarea"
-              row={3}
-              placeholder="Description"
-              name="description"
-              value={description}
-              onChange={onChangeUpdatedPostForm}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Control
-              type="text"
-              row={3}
-              placeholder="Youtube Tutorial Url"
-              name="url"
-              value={url}
-              onChange={onChangeUpdatedPostForm}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Control
-              as="select"
-              value={status}
-              name="status"
-              onChange={onChangeUpdatedPostForm}
-            >
-              <option value="TO LEARN">TO LEARN</option>
-              <option value="LEARNING">LEARNING</option>
-
-              <option value="LEARNED">LEARNED</option>
-            </Form.Control>
-          </Form.Group>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={closeDialog}>
+    <Modal isOpen={showUpdatePostModal} onClose={closeDialog} size="lg">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Make progress?</ModalHeader>
+        <ModalCloseButton />
+        <form onSubmit={onSubmit}>
+          <ModalBody>
+            <VStack spacing={4}>
+              <FormControl isRequired>
+                <FormLabel>Title</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Enter title"
+                  name="title"
+                  value={title}
+                  onChange={onChangeUpdatedPostForm}
+                />
+                <FormHelperText>Required</FormHelperText>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Description</FormLabel>
+                <Textarea
+                  placeholder="Enter description"
+                  name="description"
+                  value={description}
+                  onChange={onChangeUpdatedPostForm}
+                  rows={3}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Tutorial URL</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="https://youtube.com/..."
+                  name="url"
+                  value={url}
+                  onChange={onChangeUpdatedPostForm}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Status</FormLabel>
+                <Select
+                  name="status"
+                  value={status}
+                  onChange={onChangeUpdatedPostForm}
+                >
+                  <option value="TO LEARN">TO LEARN</option>
+                  <option value="LEARNING">LEARNING</option>
+                  <option value="LEARNED">LEARNED</option>
+                </Select>
+              </FormControl>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={closeDialog}>
               Cancel
             </Button>
-            <Button variant="primary" type="submit">
-              Learn It
+            <Button colorScheme="brand" type="submit">
+              Update
             </Button>
-          </Modal.Footer>
-        </Modal.Body>
-      </Form>
+          </ModalFooter>
+        </form>
+      </ModalContent>
     </Modal>
   );
 };

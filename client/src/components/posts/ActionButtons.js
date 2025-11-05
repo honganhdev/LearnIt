@@ -1,4 +1,4 @@
-import Button from "react-bootstrap/Button";
+import { IconButton, HStack, Image, Link } from "@chakra-ui/react";
 import playIcon from "../../assets/play-btn.svg";
 import editIcon from "../../assets/pencil.svg";
 import deleteIcon from "../../assets/trash.svg";
@@ -13,17 +13,35 @@ const ActionButtons = ({ url, _id }) => {
   };
 
   return (
-    <>
-      <Button className="post-button" href={url} target="_blank">
-        <img src={playIcon} alt="play" width="32" height="32" />
-      </Button>
-      <Button className="post-button" onClick={choosePost.bind(this, _id)}>
-        <img src={editIcon} alt="edit" width="24" height="24" />
-      </Button>
-      <Button className="post-button" onClick={deletePost.bind(this, _id)}>
-        <img src={deleteIcon} alt="delete" width="24" height="24" />
-      </Button>
-    </>
+    <HStack spacing={1}>
+      {url && (
+        <IconButton
+          as={Link}
+          href={url}
+          target="_blank"
+          size="sm"
+          variant="ghost"
+          aria-label="Open link"
+          icon={<Image src={playIcon} alt="play" boxSize="20px" />}
+        />
+      )}
+      <IconButton
+        onClick={() => choosePost(_id)}
+        size="sm"
+        variant="ghost"
+        colorScheme="blue"
+        aria-label="Edit post"
+        icon={<Image src={editIcon} alt="edit" boxSize="18px" />}
+      />
+      <IconButton
+        onClick={() => deletePost(_id)}
+        size="sm"
+        variant="ghost"
+        colorScheme="red"
+        aria-label="Delete post"
+        icon={<Image src={deleteIcon} alt="delete" boxSize="18px" />}
+      />
+    </HStack>
   );
 };
 
