@@ -1,41 +1,88 @@
 import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
-import { AuthContext } from "../contexts/AuthContext";
-import { useContext } from "react";
 import { Redirect } from "react-router-dom";
-import Spinner from "react-bootstrap/Spinner";
+import { Box, Flex, Spinner, Heading, VStack, Container } from "@chakra-ui/react";
+import { useAuth } from "../hooks/useAuth";
 
 const Auth = ({ authRoute }) => {
   const {
     authState: { authLoading, isAuthenticated },
-  } = useContext(AuthContext);
+  } = useAuth();
 
   let body;
 
-  if (authLoading)
+  if (authLoading) {
     body = (
-      <div className="d-flex justify-content-center mt-2">
-        <Spinner animation="border" variant="info" />
-      </div>
+      <Flex justify="center" mt={4}>
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="white"
+          size="xl"
+        />
+      </Flex>
     );
-  else if (isAuthenticated) return <Redirect to="/dashboard" />;
-  else
+  } else if (isAuthenticated) {
+    return <Redirect to="/dashboard" />;
+  } else {
     body = (
       <>
         {authRoute === "login" && <LoginForm />}
         {authRoute === "register" && <RegisterForm />}
       </>
     );
+  }
+
   return (
-    <div className="landing">
-      <div className="dark-overlay">
-        <div className="landing-inner">
-          <h1>Lear It</h1>
-          <h4>Keep track of what you are learning</h4>
-          {body}
-        </div>
-      </div>
-    </div>
+    <Box
+      minH="100vh"
+      bgGradient="linear(to-br, brand.600, brand.800)"
+      position="relative"
+    >
+      <Box
+        position="absolute"
+        top="0"
+        left="0"
+        right="0"
+        bottom="0"
+        bg="blackAlpha.400"
+      >
+        <Container maxW="container.sm" h="100vh">
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            h="100%"
+            py={8}
+          >
+            <VStack spacing={6} w="100%">
+              <Heading
+                as="h1"
+                size="2xl"
+                color="white"
+                textAlign="center"
+                fontWeight="bold"
+              >
+                LearnIt
+              </Heading>
+              <Heading
+                as="h4"
+                size="md"
+                color="white"
+                textAlign="center"
+                fontWeight="normal"
+              >
+                Keep track of what you are learning
+              </Heading>
+              <Box w="100%" maxW="md">
+                {body}
+              </Box>
+            </VStack>
+          </Flex>
+        </Container>
+      </Box>
+    </Box>
   );
 };
 

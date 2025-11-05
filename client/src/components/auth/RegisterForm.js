@@ -1,16 +1,21 @@
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { Link } from "react-router-dom";
-import { useState, useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import {
+  Box,
+  Button,
+  FormControl,
+  Input,
+  VStack,
+  Text,
+} from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 import AlertMessage from "../layout/AlertMessage";
 
 const RegisterForm = () => {
-  //context
-  const { registerUser } = useContext(AuthContext);
+  // Custom hook
+  const { registerUser } = useAuth();
 
-  // local state
-
+  // Local state
   const [registerForm, setRegisterForm] = useState({
     username: "",
     password: "",
@@ -46,53 +51,60 @@ const RegisterForm = () => {
       console.log(error);
     }
   };
+
   return (
-    <>
-      <Form className="my-4" onSubmit={register}>
-        <AlertMessage info={alert} />
-        <Form.Group>
-          <Form.Control
-            type="text"
-            placeholder="Username"
-            name="username"
-            required
-            value={username}
-            onChange={onChangeRegisterForm}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            name="password"
-            required
-            value={password}
-            onChange={onChangeRegisterForm}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Control
-            type="password"
-            placeholder="Confirm Password"
-            name="confirmPassword"
-            required
-            value={confirmPassword}
-            onChange={onChangeRegisterForm}
-          />
-        </Form.Group>
-        <Button variant="success" type="Submit">
-          Register
-        </Button>
-      </Form>
-      <p>
-        Already have an account ?
-        <Link to="/login">
-          <Button variant="info" size="sm" className="ml-2">
-            Login
+    <Box>
+      <form onSubmit={register}>
+        <VStack spacing={4} align="stretch">
+          <AlertMessage info={alert} />
+          <FormControl isRequired>
+            <Input
+              type="text"
+              placeholder="Username"
+              name="username"
+              value={username}
+              onChange={onChangeRegisterForm}
+              bg="white"
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <Input
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={password}
+              onChange={onChangeRegisterForm}
+              bg="white"
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <Input
+              type="password"
+              placeholder="Confirm Password"
+              name="confirmPassword"
+              value={confirmPassword}
+              onChange={onChangeRegisterForm}
+              bg="white"
+            />
+          </FormControl>
+          <Button type="submit" colorScheme="green" size="lg" width="full">
+            Register
           </Button>
-        </Link>
-      </p>
-    </>
+        </VStack>
+      </form>
+      <Text mt={4} textAlign="center" color="white">
+        Already have an account?{" "}
+        <Button
+          as={RouterLink}
+          to="/login"
+          variant="link"
+          colorScheme="blue"
+          size="sm"
+        >
+          Login
+        </Button>
+      </Text>
+    </Box>
   );
 };
 

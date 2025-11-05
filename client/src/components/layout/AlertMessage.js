@@ -1,8 +1,20 @@
-import Alert from "react-bootstrap/Alert";
+import { Alert, AlertIcon, AlertDescription } from "@chakra-ui/react";
 
 const AlertMessage = ({ info }) => {
-  return info === null ? null : (
-    <Alert variant={info.type}>{info.message}</Alert>
+  if (info === null) return null;
+
+  const statusMap = {
+    success: "success",
+    danger: "error",
+    warning: "warning",
+    info: "info",
+  };
+
+  return (
+    <Alert status={statusMap[info.type] || "info"} borderRadius="md" mb={4}>
+      <AlertIcon />
+      <AlertDescription>{info.message}</AlertDescription>
+    </Alert>
   );
 };
 

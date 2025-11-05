@@ -1,14 +1,27 @@
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { useContext, useState } from "react";
-import { PostContext } from "../../contexts/PostContext";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+  VStack,
+  FormHelperText,
+} from "@chakra-ui/react";
+import { useState } from "react";
+import { usePosts } from "../../hooks/usePosts";
 
 export const AddPostModal = () => {
-  //Context
+  // Custom hook
   const { showAddPostModal, setShowAddPostModal, addPost, setShowToast } =
-    useContext(PostContext);
-  //State
+    usePosts();
+  // State
   const [newPost, setNewPost] = useState({
     title: "",
     description: "",
@@ -38,56 +51,57 @@ export const AddPostModal = () => {
   };
 
   return (
-    <Modal show={showAddPostModal} onHide={closeDialog}>
-      <Modal.Header closeButton>
-        <Modal.Title>What do you want to Learn</Modal.Title>
-      </Modal.Header>
-      <Form onSubmit={onSubmit}>
-        <Modal.Body>
-          <Form.Group>
-            <Form.Control
-              type="text"
-              placeholder="Title"
-              name="title"
-              required
-              aria-describedby="title-help"
-              value={title}
-              onChange={onChangeNewPostForm}
-            />
-            <Form.Text id="title-help" muted>
-              Requited
-            </Form.Text>
-          </Form.Group>
-          <Form.Group>
-            <Form.Control
-              as="textarea"
-              row={3}
-              placeholder="Description"
-              name="description"
-              value={description}
-              onChange={onChangeNewPostForm}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Control
-              type="text"
-              row={3}
-              placeholder="Youtube Tutorial Url"
-              name="url"
-              value={url}
-              onChange={onChangeNewPostForm}
-            />
-          </Form.Group>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={closeDialog}>
+    <Modal isOpen={showAddPostModal} onClose={closeDialog} size="lg">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>What do you want to Learn?</ModalHeader>
+        <ModalCloseButton />
+        <form onSubmit={onSubmit}>
+          <ModalBody>
+            <VStack spacing={4}>
+              <FormControl isRequired>
+                <FormLabel>Title</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Enter title"
+                  name="title"
+                  value={title}
+                  onChange={onChangeNewPostForm}
+                />
+                <FormHelperText>Required</FormHelperText>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Description</FormLabel>
+                <Textarea
+                  placeholder="Enter description"
+                  name="description"
+                  value={description}
+                  onChange={onChangeNewPostForm}
+                  rows={3}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Tutorial URL</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="https://youtube.com/..."
+                  name="url"
+                  value={url}
+                  onChange={onChangeNewPostForm}
+                />
+              </FormControl>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={closeDialog}>
               Cancel
             </Button>
-            <Button variant="primary" type="submit">
-              Learn It
+            <Button colorScheme="brand" type="submit">
+              LearnIt!
             </Button>
-          </Modal.Footer>
-        </Modal.Body>
-      </Form>
+          </ModalFooter>
+        </form>
+      </ModalContent>
     </Modal>
   );
 };

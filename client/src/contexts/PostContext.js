@@ -1,7 +1,6 @@
 import { createContext, useReducer, useState } from "react";
 import { postReducer } from "../reducers/postReducer";
 import {
-  apiUrl,
   POSTS_LOADED_FAIL,
   POSTS_LOADED_SUCCESS,
   ADD_POST,
@@ -9,7 +8,7 @@ import {
   UPDATE_POST,
   FIND_POST,
 } from "./constants";
-import axios from "axios";
+import postService from "../services/postService";
 
 export const PostContext = createContext();
 
@@ -30,72 +29,53 @@ const PostContextProvider = ({ children }) => {
     type: null,
   });
 
-  //Get All Post
+  // Get All Posts
   const getPosts = async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/posts`);
-      if (response.data.success) {
-        dispatch({
-          type: POSTS_LOADED_SUCCESS,
-          payload: response.data.posts,
-        });
-      }
-    } catch (error) {
+    const response = await postService.getPosts();
+    if (response.success) {
+      dispatch({
+        type: POSTS_LOADED_SUCCESS,
+        payload: response.posts,
+      });
+    } else {
       dispatch({ type: POSTS_LOADED_FAIL });
     }
   };
 
-  //Add post
+  // Add Post
   const addPost = async (newPost) => {
-    try {
-      const response = await axios.post(`${apiUrl}/posts`, newPost);
-      if (response.data.success) {
-        dispatch({ type: ADD_POST, payload: response.data.post });
-        return response.data;
-      }
-    } catch (error) {
-      return error.response.data
-        ? error.response.data
-        : { success: false, message: "Server Error" };
+    const response = await postService.createPost(newPost);
+    if (response.success) {
+      dispatch({ type: ADD_POST, payload: response.post });
     }
+    return response;
   };
 
-  //Delete post
+  // Delete Post
   const deletePost = async (postId) => {
-    try {
-      const response = await axios.delete(`${apiUrl}/posts/${postId}`);
-      if (response.data.success)
-        dispatch({ type: DELETE_POST, payload: postId });
-    } catch (error) {
-      console.log(error);
+    const response = await postService.deletePost(postId);
+    if (response.success) {
+      dispatch({ type: DELETE_POST, payload: postId });
     }
+    return response;
   };
 
-  //Find post when user is updating post
+  // Find Post for updating
   const findPost = (postId) => {
     const post = postState.posts.find((post) => post._id === postId);
     dispatch({ type: FIND_POST, payload: post });
   };
 
-  //Update Post
+  // Update Post
   const updatePost = async (updatedPost) => {
-    try {
-      const response = await axios.put(
-        `${apiUrl}/posts/${updatedPost._id}`,
-        updatedPost
-      );
-      if (response.data.success) {
-        dispatch({
-          type: UPDATE_POST,
-          payload: response.data.post,
-        });
-        return response.data;
-      }
-    } catch (error) {
-      return error.response.data
-        ? error.response.data
-        : { success: false, message: "Server Error" };
+    const response = await postService.updatePost(updatedPost._id, updatedPost);
+    if (response.success) {
+      dispatch({
+        type: UPDATE_POST,
+        payload: response.post,
+      });
     }
+    return response;
   };
   // post context data
 

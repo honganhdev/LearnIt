@@ -5,6 +5,9 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 const verifyToken = require("../middleware/auth");
+const { validateUsername, validatePassword } = require("../utils/validation");
+const { authLimiter } = require("../middleware/rateLimiter");
+const logger = require("../utils/logger");
 
 // @route GET api/auth
 // @desc Check if user is logged in
@@ -18,7 +21,7 @@ router.get("/", verifyToken, async (req, res) => {
         .json({ success: false, message: "User not found" });
     res.json({ success: true, user });
   } catch (error) {
-    console.log(error);
+    logger.error("Error checking auth status", { error: error.message });
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
@@ -27,17 +30,23 @@ router.get("/", verifyToken, async (req, res) => {
 // @desc Register user
 // @access Public
 
-router.post("/register", async (req, res) => {
+router.post("/register", authLimiter, async (req, res) => {
   const { username, password } = req.body;
 
-  //simple validation
-  if (!username || !password)
-    return res
-      .status(400)
-      .json({ success: false, message: "Missing username and,or password" });
-  try {
-    //Check for existing user
+  // Validate username
+  const usernameValidation = validateUsername(username);
+  if (!usernameValidation.valid) {
+    return res.status(400).json({ success: false, message: usernameValidation.message });
+  }
 
+  // Validate password
+  const passwordValidation = validatePassword(password);
+  if (!passwordValidation.valid) {
+    return res.status(400).json({ success: false, message: passwordValidation.message });
+  }
+
+  try {
+    // Check for existing user
     const user = await User.findOne({ username });
     if (user)
       return res
@@ -50,10 +59,11 @@ router.post("/register", async (req, res) => {
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
 
-    // Return token
+    // Return token with expiration
     const accessToken = jwt.sign(
       { userId: newUser._id },
-      process.env.ACCESS_TOKEN_SECRET
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '24h' }
     );
 
     res.json({
@@ -62,23 +72,24 @@ router.post("/register", async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    console.log(error);
+    logger.error("Error during registration", { error: error.message });
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
 
-// @route POST api/auth/rlogin
+// @route POST api/auth/login
 // @desc Login user
 // @access Public
 
-router.post("/login", async (req, res) => {
+router.post("/login", authLimiter, async (req, res) => {
   const { username, password } = req.body;
 
-  //simple validation
-  if (!username || !password)
+  // Validate input
+  if (!username || !password) {
     return res
       .status(400)
-      .json({ success: false, message: "Missing username and,or password" });
+      .json({ success: false, message: "Missing username and/or password" });
+  }
 
   try {
     // Check for existing user
@@ -95,11 +106,11 @@ router.post("/login", async (req, res) => {
         .status(400)
         .json({ success: false, message: "Incorrect username or password" });
 
-    // all good
-    // Return token
+    // All good - Return token with expiration
     const accessToken = jwt.sign(
       { userId: user._id },
-      process.env.ACCESS_TOKEN_SECRET
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '24h' }
     );
 
     res.json({
@@ -108,7 +119,7 @@ router.post("/login", async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    console.log(error);
+    logger.error("Error during login", { error: error.message });
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });

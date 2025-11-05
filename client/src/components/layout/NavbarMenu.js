@@ -1,11 +1,17 @@
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
+import {
+  Box,
+  Flex,
+  Button,
+  Image,
+  Text,
+  HStack,
+  Spacer,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 import learnItLogo from "../../assets/logo.svg";
 import logoutIcon from "../../assets/logout.svg";
-import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 
 const NavbarMenu = () => {
   const {
@@ -13,61 +19,62 @@ const NavbarMenu = () => {
       user: { username },
     },
     logoutUser,
-  } = useContext(AuthContext);
+  } = useAuth();
 
-  const logout = () => logoutUser();
+  const bgColor = useColorModeValue("brand.600", "brand.700");
+  const textColor = useColorModeValue("white", "gray.100");
+
   return (
-    <Navbar expand="lg" bg="primary" variant="dark" className="shadow">
-      <Navbar.Brand className="font-weight-bolder text-white">
-        <img
-          src={learnItLogo}
-          alt="learnItLogo"
-          width="32"
-          height="32"
-          className="mr-2"
-        />
-        LearnIt
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto">
-          <Nav.Link
-            className="font-weight-bolder text-white"
-            to="/dashboard"
-            as={Link}
-          >
-            Dashboard
-          </Nav.Link>
-          <Nav.Link
-            className="font-weight-bolder text-white"
-            to="/About"
-            as={Link}
-          >
-            About
-          </Nav.Link>
-        </Nav>
-
-        <Nav className="justify-content-end">
-          <Nav.Link className="font-weight-bolder text-white" disabled>
+    <Box bg={bgColor} px={4} boxShadow="md">
+      <Flex h={16} alignItems="center" justifyContent="space-between">
+        <HStack spacing={8} alignItems="center">
+          <HStack spacing={2}>
+            <Image src={learnItLogo} alt="LearnIt Logo" boxSize="32px" />
+            <Text
+              fontSize="xl"
+              fontWeight="bold"
+              color={textColor}
+            >
+              LearnIt
+            </Text>
+          </HStack>
+          <HStack as="nav" spacing={4} display={{ base: "none", md: "flex" }}>
+            <Button
+              as={RouterLink}
+              to="/dashboard"
+              variant="ghost"
+              color={textColor}
+              _hover={{ bg: "brand.700" }}
+            >
+              Dashboard
+            </Button>
+            <Button
+              as={RouterLink}
+              to="/about"
+              variant="ghost"
+              color={textColor}
+              _hover={{ bg: "brand.700" }}
+            >
+              About
+            </Button>
+          </HStack>
+        </HStack>
+        <Spacer />
+        <HStack spacing={4}>
+          <Text color={textColor} fontWeight="semibold">
             Welcome {username.toUpperCase()}
-          </Nav.Link>
+          </Text>
           <Button
-            variant="secondary"
-            className="font-weight-bolder text-white"
-            onClick={logout}
+            onClick={logoutUser}
+            colorScheme="gray"
+            variant="solid"
+            leftIcon={<Image src={logoutIcon} alt="Logout" boxSize="20px" />}
           >
-            <img
-              src={logoutIcon}
-              alt="logoutIcon"
-              width="32"
-              height="32"
-              className="mr-2"
-            />
             Logout
           </Button>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
+        </HStack>
+      </Flex>
+    </Box>
   );
 };
 
