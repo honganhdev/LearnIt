@@ -1,13 +1,12 @@
 import { Route, Redirect } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
 import Spinner from "react-bootstrap/Spinner";
 import NavbarMenu from "../layout/NavbarMenu";
+import { useAuth } from "../../hooks/useAuth";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const {
     authState: { authLoading, isAuthenticated },
-  } = useContext(AuthContext);
+  } = useAuth();
 
   if (authLoading)
     return (

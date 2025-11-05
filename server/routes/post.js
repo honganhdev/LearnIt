@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/auth");
+const { validatePost } = require("../utils/validation");
+const logger = require("../utils/logger");
 
 const Post = require("../models/Post");
 
@@ -14,7 +16,7 @@ router.get("/", verifyToken, async (req, res) => {
     ]);
     res.json({ success: true, posts });
   } catch (error) {
-    console.log(error);
+    logger.error("Error fetching posts", { error: error.message, userId: req.userId });
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
@@ -25,24 +27,24 @@ router.get("/", verifyToken, async (req, res) => {
 router.post("/", verifyToken, async (req, res) => {
   const { title, description, url, status } = req.body;
 
-  // simple validation
-  if (!title)
-    return res
-      .status(400)
-      .json({ success: false, message: "title is requited" });
+  // Validate post data
+  const validation = validatePost({ title, description, url, status });
+  if (!validation.valid) {
+    return res.status(400).json({ success: false, message: validation.message });
+  }
 
   try {
     const newPost = new Post({
       title,
       description,
-      url: url.startsWith(`https://`) ? url : `https://${url}`,
+      url: url && url.length > 0 ? (url.startsWith(`https://`) ? url : `https://${url}`) : '',
       status: status || "TO LEARN",
       user: req.userId,
     });
     await newPost.save();
     res.json({ success: true, message: "Happy learning", post: newPost });
   } catch (error) {
-    console.log(error);
+    logger.error("Error creating post", { error: error.message, userId: req.userId });
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
@@ -53,17 +55,17 @@ router.post("/", verifyToken, async (req, res) => {
 router.put("/:id", verifyToken, async (req, res) => {
   const { title, description, url, status } = req.body;
 
-  // simple validation
-  if (!title)
-    return res
-      .status(400)
-      .json({ success: false, message: "title is requited" });
+  // Validate post data
+  const validation = validatePost({ title, description, url, status });
+  if (!validation.valid) {
+    return res.status(400).json({ success: false, message: validation.message });
+  }
 
   try {
     let updatedPost = {
       title,
       description: description || "",
-      url: (url.startsWith(`https://`) ? url : `https://${url}`) || "",
+      url: url && url.length > 0 ? (url.startsWith(`https://`) ? url : `https://${url}`) : "",
       status: status || "TO LEARN",
     };
     const postUpdateCondition = { _id: req.params.id, user: req.userId };
@@ -87,7 +89,7 @@ router.put("/:id", verifyToken, async (req, res) => {
       post: updatedPost,
     });
   } catch (error) {
-    console.log(error);
+    logger.error("Error updating post", { error: error.message, postId: req.params.id });
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
@@ -108,7 +110,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
       });
     res.json({ success: true, post: deletePost });
   } catch (error) {
-    console.log(error);
+    logger.error("Error deleting post", { error: error.message, postId: req.params.id });
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });

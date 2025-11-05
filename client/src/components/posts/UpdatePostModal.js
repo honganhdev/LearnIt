@@ -1,18 +1,18 @@
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useContext, useState, useEffect } from "react";
-import { PostContext } from "../../contexts/PostContext";
+import { useState, useEffect } from "react";
+import { usePosts } from "../../hooks/usePosts";
 
 export const UpdatePostModal = () => {
-  //Context
+  // Custom hook
   const {
     postState: { post },
     showUpdatePostModal,
     setShowUpdatePostModal,
     updatePost,
     setShowToast,
-  } = useContext(PostContext);
+  } = usePosts();
   //State
   const [updatedPost, setUpdatedPost] = useState(post);
 

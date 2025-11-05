@@ -1,5 +1,4 @@
-import { PostContext } from "../contexts/PostContext";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
@@ -8,19 +7,20 @@ import Col from "react-bootstrap/Col";
 import Toast from "react-bootstrap/Toast";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-import { AuthContext } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
+import { usePosts } from "../hooks/usePosts";
 import SinglePost from "../components/posts/SinglePost";
 import { AddPostModal } from "../components/posts/AddPostModal";
 import { UpdatePostModal } from "../components/posts/UpdatePostModal";
 import addIcon from "../assets/plus-circle-fill.svg";
 
 const Dashboard = () => {
-  //Context
+  // Custom hooks
   const {
     authState: {
       user: { username },
     },
-  } = useContext(AuthContext);
+  } = useAuth();
 
   const {
     postState: { post, posts, postsLoading },
@@ -28,7 +28,7 @@ const Dashboard = () => {
     setShowAddPostModal,
     showToast: { show, message, type },
     setShowToast,
-  } = useContext(PostContext);
+  } = usePosts();
 
   //Start: Get All Post
   useEffect(() => getPosts(), []);

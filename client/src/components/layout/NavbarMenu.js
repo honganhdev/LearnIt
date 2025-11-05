@@ -4,8 +4,7 @@ import learnItLogo from "../../assets/logo.svg";
 import logoutIcon from "../../assets/logout.svg";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 
 const NavbarMenu = () => {
   const {
@@ -13,7 +12,7 @@ const NavbarMenu = () => {
       user: { username },
     },
     logoutUser,
-  } = useContext(AuthContext);
+  } = useAuth();
 
   const logout = () => logoutUser();
   return (

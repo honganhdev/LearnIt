@@ -6,29 +6,32 @@ import AuthContextProvider from "./contexts/AuthContext";
 import Dashboard from "./views/Dashboard";
 import ProtectedRoute from "./components/routing/ProtectedRoute";
 import PostContextProvider from "./contexts/PostContext";
+import ErrorBoundary from "./components/layout/ErrorBoundary";
 
 function App() {
   return (
-    <AuthContextProvider>
-      <PostContextProvider>
-        <Router>
-          <Switch>
-            <Route exact path="/" component={Landing} />
-            <Route
-              exact
-              path="/login"
-              render={(props) => <Auth {...props} authRoute="login" />}
-            />
-            <Route
-              exact
-              path="/register"
-              render={(props) => <Auth {...props} authRoute="register" />}
-            />
-          </Switch>
-          <ProtectedRoute exact path="/dashboard" component={Dashboard} />
-        </Router>
-      </PostContextProvider>
-    </AuthContextProvider>
+    <ErrorBoundary>
+      <AuthContextProvider>
+        <PostContextProvider>
+          <Router>
+            <Switch>
+              <Route exact path="/" component={Landing} />
+              <Route
+                exact
+                path="/login"
+                render={(props) => <Auth {...props} authRoute="login" />}
+              />
+              <Route
+                exact
+                path="/register"
+                render={(props) => <Auth {...props} authRoute="register" />}
+              />
+            </Switch>
+            <ProtectedRoute exact path="/dashboard" component={Dashboard} />
+          </Router>
+        </PostContextProvider>
+      </AuthContextProvider>
+    </ErrorBoundary>
   );
 }
 

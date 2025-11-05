@@ -1,13 +1,13 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
-import { useState, useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 import AlertMessage from "../layout/AlertMessage";
 
 const LoginForm = () => {
-  //context
-  const { loginUser } = useContext(AuthContext);
+  // Custom hook
+  const { loginUser } = useAuth();
 
   // local state
 

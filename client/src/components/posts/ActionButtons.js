@@ -2,12 +2,10 @@ import Button from "react-bootstrap/Button";
 import playIcon from "../../assets/play-btn.svg";
 import editIcon from "../../assets/pencil.svg";
 import deleteIcon from "../../assets/trash.svg";
-import { useContext } from "react";
-import { PostContext } from "../../contexts/PostContext";
+import { usePosts } from "../../hooks/usePosts";
 
 const ActionButtons = ({ url, _id }) => {
-  const { deletePost, findPost, setShowUpdatePostModal } =
-    useContext(PostContext);
+  const { deletePost, findPost, setShowUpdatePostModal } = usePosts();
 
   const choosePost = (postId) => {
     findPost(postId);

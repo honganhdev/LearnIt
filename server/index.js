@@ -2,25 +2,34 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const logger = require("./utils/logger");
 
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/post");
 
+const getMongoUri = () => {
+  const {
+    DB_USERNAME = '',
+    DB_PASSWORD = '',
+    DB_HOST = 'cluster0.mongodb.net',
+    DB_NAME = 'learnit',
+  } = process.env;
+
+  return `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`;
+};
+
 const connectDB = async () => {
   try {
-    await mongoose.connect(
-      `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@botdiscorddb.f4zyl.mongodb.net/botdiscorddb?retryWrites=true&w=majority`,
-      {
-        useCreateIndex: true,
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-      }
-    );
+    await mongoose.connect(getMongoUri(), {
+      useCreateIndex: true,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    });
 
-    console.log("Mongoose DB connected");
+    logger.info("MongoDB connected successfully");
   } catch (error) {
-    console.log(error.message);
+    logger.error("MongoDB connection error", { error: error.message });
     process.exit(1);
   }
 };
@@ -36,4 +45,4 @@ app.use("/api/posts", postRoute);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`server start on ${PORT}`));
+app.listen(PORT, () => logger.info(`Server started on port ${PORT}`));
